@@ -225,6 +225,39 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                         <span class="nav-link-text">Holidays</span>
                     </a><!--//nav-link-->
                 </li><!--//nav-item-->
+                <li class="nav-item has-submenu">
+                    <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                    @php $authSegments = ['users']; @endphp
+                    <a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#auth"
+                        aria-expanded="{{ in_array($segment2, $authSegments)?'true':'false' }}" aria-controls="submenu-1">
+                        <span class="nav-icon">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <!-- Product box -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M6 3a.5.5 0 0 1 .5.5V7h4.793L9.146 4.854a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L11.293 8H6.5v3.5a.5.5 0 0 1-1 0v-8A.5.5 0 0 1 6 3z"/>
+                            <path fill-rule="evenodd" d="M13.5 14A1.5 1.5 0 0 1 12 15.5h-8A1.5 1.5 0 0 1 2.5 14v-12A1.5 1.5 0 0 1 4 0.5h8A1.5 1.5 0 0 1 13.5 2v2a.5.5 0 0 1-1 0V2A.5.5 0 0 0 12 1.5h-8A.5.5 0 0 0 3.5 2v12A.5.5 0 0 0 4 14.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2z"/>
+                            </svg>
+
+                        </span>
+                        <span class="nav-link-text">Authentication</span>
+                        <span class="submenu-arrow">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down"
+                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                        </span><!--//submenu-arrow-->
+                    </a><!--//nav-link-->
+                    <div id="auth" class="collapse submenu submenu-1 {{ (in_array($segment2, ['users']))?'show':'' }}" data-bs-parent="#menu-accordion">
+                        <ul class="submenu-list list-unstyled">
+                            <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'users')?'active':'' }}" href="{{ url('admin/users') }}">Users</a>
+                            </li>
+                            <!-- <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'products' || $segment2 == 'add_edit_product')?'active':'' }}" href="{{ url('admin/products') }}">Products</a>
+                            </li> -->
+                            
+                        </ul>
+                    </div>
+                </li><!--//nav-item-->
                 <li class="nav-item">
                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                     <a class="nav-link {{ ($segment2 == 'settings')?'active':'' }}"

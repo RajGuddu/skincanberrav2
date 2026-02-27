@@ -22,6 +22,7 @@ class Common_model extends Model
         $this->memberAddressTbl = 'tbl_member_address';
         $this->purchasedCourseTbl = 'tbl_purchased_course';
         $this->coursesTbl = 'tbl_courses';
+        $this->rolePrivilegeTbl = 'tbl_role_privilege';
 
     }
     /*public function isvalidate($email){
@@ -301,6 +302,13 @@ class Common_model extends Model
         $builder->where('p.pro_id', $pro_id);
         $builder->where('at.attrId', $attrid);
         $result = $builder->first();
+        return $result;
+    }
+    public function get_users_list(){
+        $builder = DB::table($this->adminTbl.' AS a') ;
+        $builder->select('a.*','rp.post_name');
+        $builder->leftJoin($this->rolePrivilegeTbl.' AS rp','a.privilege_id','=','rp.privilege_id');
+        $result = $builder->get();
         return $result;
     }
     public function get_all_new_product_order($status=null){
