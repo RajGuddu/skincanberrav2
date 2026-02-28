@@ -40,6 +40,7 @@
 								<label for="email" class="form-label">Email</label>
 								<input type="email" class="form-control" id="email" name="email"
 									value="{{ old('email', $record->email ?? '') }}">
+								<input type="hidden" name="oldEmail" value="{{ $record->email ?? '' }}">
 								@error('email') <span class="text-danger"> {{ $message }} </span> @enderror
 							</div>
 							<div class="mb-3">
@@ -83,41 +84,17 @@
 					<div class="card-body">
 						<div class="d-flex align-content-start flex-wrap my-2">
 							@php $isImage = 0; @endphp
-							@if(isset($record) && $record->cms_banner != '')
+							@if(isset($record) && $record->image != '')
 							@php $isImage = 1; @endphp
 							<div class="img-box">
 								<span class="cancel-icon"
-									onclick="cancel_image_('tbl_cms','cms_banner','id', <?=$record->id?>)"><i
+									onclick="cancel_image_('tbl_admin','image','user_id', <?=$record->user_id?>)"><i
 										class="fa-solid fa-xmark" title="Cancel"></i>
 								</span>
-								<img src="{{ url(IMAGE_PATH.$record->cms_banner) }}" class="" alt="...">
-								<small class="image-title">CMS Banner</small>
+								<img src="{{ url(IMAGE_PATH.$record->image) }}" class="" alt="...">
+								<small class="image-title">User Photo</small>
 							</div>
 							@endif
-							<?php /* @if(isset($record) && $record->thumb_image != '')
-							@php $isImage = 1; @endphp
-							<div class="img-box">
-								<span class="cancel-icon"
-									onclick="cancel_image_('tbl_testimonial','thumb_image','id', <?=$record->id?>)"><i
-										class="fa-solid fa-xmark" title="Cancel"></i>
-								</span>
-								<img src="{{ url(IMAGE_PATH.$record->thumb_image) }}" class="" alt="...">
-								<small class="image-title">Thumbnail</small>
-							</div>
-							@endif
-							@if(isset($record) && $record->video != '')
-							@php $isImage = 1; @endphp
-							<div class="img-box">
-								<span class="cancel-icon"
-									onclick="cancel_image_('tbl_testimonial','video','id', <?=$record->id?>)"><i
-										class="fa-solid fa-xmark" title="Cancel"></i>
-								</span>
-								<!-- <img src="{{ url(IMAGE_PATH.$record->video) }}" class="" alt="..."> -->
-								<iframe width="140" height="140" src="{{ 'https://www.youtube.com/embed/'.$record->video }}" frameborder="0" allow="accelerometer; autoplay;"></iframe>
-
-								<small class="image-title">Youtube Video</small>
-							</div>
-							@endif */ ?>
 							
 							@if(!$isImage)
 							<div class="text-center text-danger">No any image upload!</div>

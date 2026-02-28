@@ -45,12 +45,15 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                         <ul class="submenu-list list-unstyled">
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'dashboard')?'active':'' }}" href="{{ url('admin/dashboard') }}">Overview</a>
                             </li>
+                            @if(is_privilege(3))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'cms' || $segment2 == 'add_edit_cms')?'active':'' }}" href="{{ url('admin/cms') }}">CMS</a>
                             </li>
+                            @endif
                             
                         </ul>
                     </div>
                 </li><!--//nav-item-->
+                @if(is_privilege(4) || is_privilege(5) || is_privilege(6))
                 <li class="nav-item has-submenu">
                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                     <a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#content"
@@ -76,15 +79,23 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                     </a><!--//nav-link-->
                     <div id="content" class="collapse submenu content {{ ($segment2 == 'banner' || $segment2 == 'add_edit_banner' || $segment2 == 'homeContent' || $segment2 == 'aboutContent')?'show':'' }}" data-bs-parent="#menu-accordion">
                         <ul class="submenu-list list-unstyled">
+                            @if(is_privilege(4))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'banner' || $segment2 == 'add_edit_banner')?'active':'' }}" href="{{ url('admin/banner') }}">Manage Banner</a>
                             </li>
+                            @endif
+                            @if(is_privilege(5))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'homeContent')?'active':'' }}" href="{{ url('admin/homeContent') }}">Home/Contact Content</a>
+                            @endif
+                            @if(is_privilege(6))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'aboutContent')?'active':'' }}" href="{{ url('admin/aboutContent') }}">About Content</a>
                             </li>
+                            @endif
                             
                         </ul>
                     </div>
                 </li><!--//nav-item-->
+                @endif
+                @if(is_privilege(7) || is_privilege(8) || is_privilege(9) || is_privilege(10) || is_privilege(11) || is_privilege(12) || is_privilege(13))
                 <li class="nav-item has-submenu">
                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                     <a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#Customer"
@@ -107,29 +118,44 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                     </a><!--//nav-link-->
                     <div id="Customer" class="collapse submenu Customer {{ ($segment2 == 'appointment' || $segment2 == 'appointment-list' || $segment2 == 'customers' || $segment2 == 'customer_orders' || $segment2 == 'new_orders' || $segment2 == 'testimonials' || $segment2 == 'add_edit_testimonial' || $segment2 == 'contact_us' || $segment2 == 'purchased_courses' || $segment2 == 'all_orders')?'show':'' }}" data-bs-parent="#menu-accordion">
                         <ul class="submenu-list list-unstyled">
+                            @if(is_privilege(7))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'customers' || $segment2 == 'customer_orders' || $segment2 == 'purchased_courses')?'active':'' }}" href="{{ url('admin/customers') }}">Customers</a>
                             </li>
+                            @endif
+                            @if(is_privilege(8))
                             <li class="submenu-item">
                                 <a class="submenu-link {{ ($segment2 == 'new_orders')?'active':'' }}" href="{{ url('admin/new_orders') }}">New Orders
                                 <span class="badge bg-danger ms-2">{{ $newOrdersCount ?? 0 }}</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(is_privilege(9))
                             <li class="submenu-item">
                                 <a class="submenu-link {{ ($segment2 == 'all_orders')?'active':'' }}" href="{{ url('admin/all_orders') }}">All Orders
                                 <span class="badge bg-danger ms-2">{{ $allOrdersCount ?? 0 }}</span>
                                 </a>
                             </li>
+                            @endif
+                            @if(is_privilege(10))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'appointment')?'active':'' }}" href="{{ url('admin/appointment') }}">Appointment Weekly</a>
                             </li>
+                            @endif
+                            @if(is_privilege(11))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'appointment-list')?'active':'' }}" href="{{ url('admin/appointment-list') }}">Appointment List</a>
                             </li>
+                            @endif
+                            @if(is_privilege(12))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'testimonials' || $segment2 == 'add_edit_testimonial')?'active':'' }}" href="{{ url('admin/testimonials') }}">Testimonial</a>
                             </li>
+                            @endif
+                            @if(is_privilege(13))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'contact_us')?'active':'' }}" href="{{ url('admin/contact_us') }}">Contact Us</a>
-                            
+                            @endif
                         </ul>
                     </div>
                 </li><!--//nav-item-->
+                @endif
+                @if(is_privilege(14) || is_privilege(15))
                 <li class="nav-item has-submenu">
                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                     <a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#Services"
@@ -153,14 +179,18 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                     </a><!--//nav-link-->
                     <div id="Services" class="collapse submenu Services {{ ($segment2 == 'services' || $segment2 == 'add_service' || $segment2 == 'edit_service' || $segment2 == 'variants' || $segment2 == 'realResult' || $segment2 == 'add_realResult')?'show':'' }}" data-bs-parent="#menu-accordion">
                         <ul class="submenu-list list-unstyled">
+                            @if(is_privilege(14))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'services' || $segment2 == 'add_service' || $segment2 == 'edit_service' || $segment2 == 'variants')?'active':'' }}" href="{{ url('admin/services') }}">Service</a>
                             </li>
+                            @endif
+                            @if(is_privilege(15))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'realResult' || $segment2 == 'add_realResult')?'active':'' }}" href="{{ url('admin/realResult') }}">Real Result (Image Upload)</a>
-                            
+                            @endif
                         </ul>
                     </div>
                 </li><!--//nav-item-->
-                
+                @endif
+                @if(is_privilege(16) || is_privilege(17))
                 <li class="nav-item has-submenu">
                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                     <a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#submenu-1"
@@ -187,15 +217,19 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                     </a><!--//nav-link-->
                     <div id="submenu-1" class="collapse submenu submenu-1 {{ ($segment2 == 'product_category' || $segment2 == 'products' || $segment2 == 'add_edit_product')?'show':'' }}" data-bs-parent="#menu-accordion">
                         <ul class="submenu-list list-unstyled">
+                            @if(is_privilege(16))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'product_category')?'active':'' }}" href="{{ url('admin/product_category') }}">Product Category</a>
                             </li>
+                            @endif
+                            @if(is_privilege(17))
                             <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'products' || $segment2 == 'add_edit_product')?'active':'' }}" href="{{ url('admin/products') }}">Products</a>
                             </li>
-                            
+                            @endif
                         </ul>
                     </div>
                 </li><!--//nav-item-->
-                
+                @endif
+                @if(is_privilege(18))
                 <li class="nav-item">
                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                     <a class="nav-link {{ ($segment2 == 'courses')?'active':'' }}"
@@ -211,6 +245,8 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                         <span class="nav-link-text">Courses</span>
                     </a><!--//nav-link-->
                 </li><!--//nav-item-->
+                @endif
+                @if(is_privilege(19))
                 <li class="nav-item">
                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                     <a class="nav-link {{ ($segment2 == 'holidays')?'active':'' }}"
@@ -225,9 +261,11 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                         <span class="nav-link-text">Holidays</span>
                     </a><!--//nav-link-->
                 </li><!--//nav-item-->
+                @endif
+                @if(is_privilege(2))
                 <li class="nav-item has-submenu">
                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                    @php $authSegments = ['users']; @endphp
+                    @php $authSegments = ['users','add_user','edit_user']; @endphp
                     <a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#auth"
                         aria-expanded="{{ in_array($segment2, $authSegments)?'true':'false' }}" aria-controls="submenu-1">
                         <span class="nav-icon">
@@ -248,9 +286,9 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                             </svg>
                         </span><!--//submenu-arrow-->
                     </a><!--//nav-link-->
-                    <div id="auth" class="collapse submenu submenu-1 {{ (in_array($segment2, ['users']))?'show':'' }}" data-bs-parent="#menu-accordion">
+                    <div id="auth" class="collapse submenu submenu-1 {{ (in_array($segment2, ['users','add_user','edit_user']))?'show':'' }}" data-bs-parent="#menu-accordion">
                         <ul class="submenu-list list-unstyled">
-                            <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'users')?'active':'' }}" href="{{ url('admin/users') }}">Users</a>
+                            <li class="submenu-item"><a class="submenu-link {{ (in_array($segment2, ['users','add_user','edit_user']))?'active':'' }}" href="{{ url('admin/users') }}">Users</a>
                             </li>
                             <!-- <li class="submenu-item"><a class="submenu-link {{ ($segment2 == 'products' || $segment2 == 'add_edit_product')?'active':'' }}" href="{{ url('admin/products') }}">Products</a>
                             </li> -->
@@ -258,6 +296,8 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                         </ul>
                     </div>
                 </li><!--//nav-item-->
+                @endif
+                @if(is_privilege(20))
                 <li class="nav-item">
                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                     <a class="nav-link {{ ($segment2 == 'settings')?'active':'' }}"
@@ -274,6 +314,7 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                         <span class="nav-link-text">Settings</span>
                     </a><!--//nav-link-->
                 </li><!--//nav-item-->
+                @endif
                 
             </ul><!--//app-menu-->
         </nav><!--//app-nav-->

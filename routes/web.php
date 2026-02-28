@@ -129,7 +129,9 @@ Route::get('/stripe-cancel', [Shop::class, 'cancel']);
 
 // *************************End Testing url********************************
 
-
+Route::get('/authentication-failed', function () {
+    return view('admin.auth-fail');
+});
 Route::middleware(['Authcheck'])->group(function () {
     Route::get('admin/dashboard', [Dashboard::class,'index']);
 
@@ -189,10 +191,10 @@ Route::middleware(['Authcheck'])->group(function () {
     /******************************************Customers************************************ */
     Route::get('admin/customers', [Customers::class,'index']);
     Route::get('admin/customer_orders/{id}', [Customers::class,'customer_orders']);
+    Route::get('admin/purchased_courses/{id}', [Customers::class,'purchased_courses']);
     Route::get('admin/new_orders', [Customers::class,'new_orders']);
     Route::match(['get','post'],'admin/change_order_status', [Customers::class,'change_order_status']);
     Route::get('admin/all_orders', [Customers::class,'all_orders']);
-    Route::get('admin/purchased_courses/{id}', [Customers::class,'purchased_courses']);
 
     /******************************************Appointment************************************ */
     Route::get('admin/appointment', [Appointment::class,'index']);
@@ -220,8 +222,8 @@ Route::middleware(['Authcheck'])->group(function () {
     /******************************************Authentication*********************************** */
     Route::match(['get', 'post'], 'admin/users', [Users::class,'index']);
     Route::match(['get', 'post'], 'admin/add_user', [Users::class,'add_user']);
-    Route::match(['get', 'post'], 'admin/edit_user', [Users::class,'edit_user']);
-    Route::match(['get', 'post'], 'admin/delete_user', [Users::class,'delete_user']);
+    Route::match(['get', 'post'], 'admin/edit_user/{id}', [Users::class,'edit_user']);
+    Route::match(['get', 'post'], 'admin/delete_user/{id}', [Users::class,'delete_user']);
 
 
     /*****************************************Auth Controllers****************************** */

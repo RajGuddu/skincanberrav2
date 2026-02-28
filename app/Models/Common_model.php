@@ -23,6 +23,7 @@ class Common_model extends Model
         $this->purchasedCourseTbl = 'tbl_purchased_course';
         $this->coursesTbl = 'tbl_courses';
         $this->rolePrivilegeTbl = 'tbl_role_privilege';
+        $this->privilegeTbl = 'tbl_privilege';
 
     }
     /*public function isvalidate($email){
@@ -33,6 +34,18 @@ class Common_model extends Model
         return $value;
 
     }*/
+    public function is_user_privilege($privilegeId, $menuId, $functionId = null){
+        $query = $this->db::table($this->privilegeTbl);
+        $query->where('privilege_id', $privilegeId);
+        $query->where('menu_id', $menuId);
+        if($functionId == null){
+            $functionId = 1;
+        }
+        $query->whereRaw('FIND_IN_SET('.$functionId.', crud_ids)');
+        //->orderBy('id','asc')
+        $value = $query->first();
+        return $value;
+    }
     public function getAllRecord($table, $whereArr=null, $orderBy=null, $limit=null){
         $builder = DB::table($table);
         if($whereArr != null){

@@ -100,10 +100,10 @@
 								
 								<td class="cell">{!! $status !!}</td>
 								<td class="cell">
-									<!-- <a class="btn-sm app-btn-secondary" href="#">View</a> -->
+									@if($list->user_id != 1)
 									<a class="btn-sm app-btn-secondary" href="{{ url('admin/edit_user/'.$list->user_id) }}">Edit</a>
 									<a class="btn-sm app-btn-secondary" onclick="return confirm('Are u sure?')" href="{{ url('admin/delete_user/'.$list->user_id) }}">Delete</a>
-									<?php /* <a class="btn-sm app-btn-secondary" href="{{ url('admin/variants/'.$list->id) }}">Variants</a> */ ?>
+									@endif
 								</td>
 							</tr>
 							@endforeach
