@@ -513,4 +513,6 @@
 
 @include('_layouts.real_result')
 
+@include('_layouts.google_review')
+
 @endsection
