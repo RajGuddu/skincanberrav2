@@ -37,10 +37,11 @@
 										<input type="hidden" class="form-control" id="about_image2" name="about_image2" value="{{ $settings->about_image ?? '' }}">
 									</div>
 								</div>
-								
+								@if(is_privilege(6,2))
 								<div class="col-md-6">
 									<button type="submit" class="btn app-btn-primary">Save Changes</button>
 								</div>
+								@endif
 							</div>
 						</form>
 					</div><!--//app-card-body-->
@@ -88,10 +89,11 @@
 									</div>
 								</div>
 								
-								
+								@if(is_privilege(6,2))
 								<div class="col-md-6">
 									<button type="submit" class="btn app-btn-primary">Save Changes</button>
 								</div>
+								@endif
 							</div>
 						</form>
 
@@ -167,10 +169,11 @@
 									</div>
 								</div>
 								
-								
+								@if(is_privilege(6,2))
 								<div class="col-md-12">
 									<button type="submit" class="btn app-btn-primary">Save Changes</button>
 								</div>
+								@endif
 							</div>
 						</form>
 					</div><!--//app-card-body-->

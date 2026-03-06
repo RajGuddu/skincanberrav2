@@ -10,10 +10,12 @@
 			<div class="col-auto">
 				<h1 class="app-page-title mb-0">Users List</h1>
 			</div>
+			@if(is_privilege(2,2))
 			<div class="col-auto">
 				<a class="btn app-btn-secondary" href="{{ url('admin/add_user') }}"> Add </a>
 				
 			</div>
+			@endif
 			<?php /* <div class="col-auto">
 				<div class="page-utilities">
 					<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
@@ -101,7 +103,10 @@
 								<td class="cell">{!! $status !!}</td>
 								<td class="cell">
 									@if($list->user_id != 1)
+									@if(is_privilege(2,3))
 									<a class="btn-sm app-btn-secondary" href="{{ url('admin/edit_user/'.$list->user_id) }}">Edit</a>
+									@endif
+									@if(is_privilege(2,4))
 									<a class="btn-sm app-btn-secondary" onclick="return confirm('Are u sure?')" href="{{ url('admin/delete_user/'.$list->user_id) }}">Delete</a>
 									@endif
 								</td>

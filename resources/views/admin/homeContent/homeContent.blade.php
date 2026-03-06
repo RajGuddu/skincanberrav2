@@ -50,10 +50,11 @@
 										<input type="hidden" class="form-control" id="about_image2" name="about_image2" value="{{ $settings->about_image ?? '' }}">
 									</div>
 								</div>
-								
+								@if(is_privilege(5,2))
 								<div class="col-md-6">
 									<button type="submit" class="btn app-btn-primary">Save Changes</button>
 								</div>
+								@endif
 							</div>
 						</form>
 					</div><!--//app-card-body-->
@@ -182,10 +183,11 @@
 										<input type="hidden" class="form-control" name="sec5_content_image3_2" value="{{ $settings->sec5_content_image3 ?? '' }}">
 									</div>
 								</div>
-								
+								@if(is_privilege(5,2))
 								<div class="col-md-6">
 									<button type="submit" class="btn app-btn-primary">Save Changes</button>
 								</div>
+								@endif
 							</div>
 						</form>
 
@@ -340,10 +342,11 @@
 										<input type="hidden" class="form-control" name="pic4_2" value="{{ $settings->pic4 ?? '' }}">
 									</div>
 								</div>
-								
+								@if(is_privilege(5,2))
 								<div class="col-md-12">
 									<button type="submit" class="btn app-btn-primary">Save Changes</button>
 								</div>
+								@endif
 							</div>
 						</form>
 					</div><!--//app-card-body-->
@@ -380,10 +383,11 @@
 										<input type="hidden" class="form-control" name="contact_page_image2" value="{{ $settings->contact_page_image ?? '' }}">
 									</div>
 								</div>
-								
+								@if(is_privilege(5,2))
 								<div class="col-md-12">
 									<button type="submit" class="btn app-btn-primary">Save Changes</button>
 								</div>
+								@endif
 							</div>
 						</form>
 					</div><!--//app-card-body-->
