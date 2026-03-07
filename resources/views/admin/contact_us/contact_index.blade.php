@@ -122,7 +122,9 @@
 								<td class="cell">{!! $status !!}</td>
 								<td class="cell">
 									<!-- <a class="btn-sm app-btn-secondary" href="#">View</a> -->
+									@if(is_privilege(13,2))
 									<a class="btn-sm app-btn-secondary" href="javascript:void(0)" onclick="change_status(<?=$list->id.','.$list->status?>);">Change Status</a>
+									@endif
 									<?php /* <a class="btn-sm app-btn-secondary" onclick="return confirm('Are u sure?')" href="{{ url('admin/delete_service/'.$list->sv_id) }}">Delete</a>
 									<a class="btn-sm app-btn-secondary" href="{{ url('admin/variants/'.$list->sv_id) }}">Variants</a> */ ?>
 								</td>

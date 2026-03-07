@@ -101,8 +101,12 @@
                                         <td class="cell">{!! $status !!}</td>
                                         <td class="cell">
                                             <!-- <a class="btn-sm app-btn-secondary" href="#">View</a> -->
+											@if(is_privilege(16,2))
                                             <a class="btn-sm app-btn-secondary" href="{{ url('admin/product_category/'.$list->id) }}">Edit</a>
+											@endif
+											@if(is_privilege(16,3))
                                             <a class="btn-sm app-btn-secondary" onclick="return confirm('Are u sure?')" href="{{ url('admin/delete_pro_category/'.$list->id) }}">Delete</a>
+											@endif
                                             <?php /* <a class="btn-sm app-btn-secondary" href="{{ url('admin/variants/'.$list->id) }}">Variants</a> */ ?>
                                         </td>
                                     </tr>

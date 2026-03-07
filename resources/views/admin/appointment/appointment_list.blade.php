@@ -111,11 +111,17 @@
                                             </td>
                                             @php $tdStyle = ''; if(isset($record) && $record->id == $item->id) $tdStyle = 'background-color:#d4edda !important;'; @endphp
                                             <td style="{{ $tdStyle }}">
+                                                @if(is_privilege(11,2))
                                                 <a class="btn-sm app-btn-secondary" href="{{ url('admin/appointment-list/'.$item->id) }}">Edit</a>{!! ($tableCol == 8)?'<br>':'' !!}
+                                                @endif
+                                                @if(is_privilege(11,3))
                                                 @if($item->dues_amount > 0)
                                                 <a class="btn-sm app-btn-secondary openPopup" href="javascript:void(0)" data-id="{{ $item->id }}" data-name="{{ $item->name }}" data-dues_amount="{{ $item->dues_amount }}">Dues Received</a>
                                                 @endif
+                                                @endif
+                                                @if(is_privilege(11,4))
 									            <a class="btn-sm app-btn-secondary" onclick="return confirm('Are u sure?')" href="{{ url('admin/delete_appointment/'.$item->id) }}">Delete</a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty

@@ -22,7 +22,9 @@
                         value="{{ old('search', session('search')) }}" required>
                     <button class="btn btn-primary" type="submit">Search</button>
                     <a href="{{ url('admin/c_search_reset') }}" class="btn btn-secondary ms-2">Reset</a>
+                    @if(is_privilege(18,2))
                     <a href="{{ url('admin/courses').'?add=1' }}" class="btn btn-secondary ms-2">Add</a>
+                    @endif
                 </div>
             </form>
             </div>
@@ -86,9 +88,12 @@
                                                     $tdStyle = "background-color:#d4edda !important;"; 
                                             @endphp
                                             <td style="{{ $tdStyle }}">
+                                                @if(is_privilege(18,3))
                                                 <a class="btn-sm app-btn-secondary" href="{{ url('admin/courses/'.$item->c_id) }}">Edit</a>
-                                               
+                                                @endif
+                                                @if(is_privilege(18,4))
 									            <a class="btn-sm app-btn-secondary" onclick="return confirm('Are u sure?')" href="{{ url('admin/delete_course/'.$item->c_id) }}">Delete</a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

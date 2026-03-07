@@ -109,6 +109,7 @@
 									@if(is_privilege(2,4))
 									<a class="btn-sm app-btn-secondary" onclick="return confirm('Are u sure?')" href="{{ url('admin/delete_user/'.$list->user_id) }}">Delete</a>
 									@endif
+									@endif
 								</td>
 							</tr>
 							@endforeach

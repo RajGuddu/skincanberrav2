@@ -58,12 +58,16 @@
                                            href="{{ url('admin/delete_customer/'.$customer->m_id) }}">
                                            Delete
                                         </a> */ ?>
+                                        @if(is_privilege(7,2))
                                         <a class="btn-sm app-btn-secondary" href="{{ url('admin/customer_orders/'.$customer->m_id) }}">
                                             Orders
                                         </a>
+                                        @endif
+                                        @if(is_privilege(7,3))
                                         <a class="btn-sm app-btn-secondary" href="{{ url('admin/purchased_courses/'.$customer->m_id) }}">
                                             Purcahsed Courses
                                         </a>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty

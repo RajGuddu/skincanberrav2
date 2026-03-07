@@ -29,16 +29,12 @@
 						<div class="col-auto">
 							<a class="btn app-btn-secondary" href="{{ url('admin/testimonials') }}"> Refresh </a>
 						</div>
+						@if(is_privilege(12,2))
 						<div class="col-auto">
 							<a class="btn app-btn-secondary" href="{{ url('admin/add_edit_testimonial') }}"> Add </a>
-							<!-- <select class="form-select w-auto">
-								<option selected value="option-1">All</option>
-								<option value="option-2">This week</option>
-								<option value="option-3">This month</option>
-								<option value="option-4">Last 3 months</option>
-
-							</select> -->
+							
 						</div>
+						@endif
 						<?php /* <div class="col-auto">
 							<a class="btn app-btn-secondary" href="#">
 								<!-- <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-1"
@@ -124,8 +120,12 @@
 								<td class="cell">{!! $status !!}</td>
 								<td class="cell">
 									<!-- <a class="btn-sm app-btn-secondary" href="#">View</a> -->
+									@if(is_privilege(12,3))
 									<a class="btn-sm app-btn-secondary" href="{{ url('admin/add_edit_testimonial/'.$list->id) }}">Edit</a>
+									@endif
+									@if(is_privilege(12,4))
 									<a class="btn-sm app-btn-secondary" onclick="return confirm('Are u sure?')" href="{{ url('admin/delete_testimonial/'.$list->id) }}">Delete</a>
+									@endif
 									<?php /* <a class="btn-sm app-btn-secondary" href="{{ url('admin/variants/'.$list->id) }}">Variants</a> */ ?>
 								</td>
 							</tr>

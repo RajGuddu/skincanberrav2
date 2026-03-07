@@ -29,16 +29,12 @@
 						<div class="col-auto">
 							<a class="btn app-btn-secondary" href="{{ url('admin/services') }}"> Refresh </a>
 						</div>
+						@if(is_privilege(14,2))
 						<div class="col-auto">
 							<a class="btn app-btn-secondary" href="{{ url('admin/add_service') }}"> Add </a>
-							<!-- <select class="form-select w-auto">
-								<option selected value="option-1">All</option>
-								<option value="option-2">This week</option>
-								<option value="option-3">This month</option>
-								<option value="option-4">Last 3 months</option>
-
-							</select> -->
+							
 						</div>
+						@endif
 						<?php /* <div class="col-auto">
 							<a class="btn app-btn-secondary" href="#">
 								<!-- <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-1"
@@ -115,9 +111,15 @@
 								<td class="cell">{{ $variantsCount }}</td>
 								<td class="cell">
 									<!-- <a class="btn-sm app-btn-secondary" href="#">View</a> -->
+									@if(is_privilege(14,3))
 									<a class="btn-sm app-btn-secondary" href="{{ url('admin/edit_service/'.$list->sv_id) }}">Edit</a>
+									@endif
+									@if(is_privilege(14,4))
 									<a class="btn-sm app-btn-secondary" onclick="return confirm('Are u sure?')" href="{{ url('admin/delete_service/'.$list->sv_id) }}">Delete</a>
+									@endif
+									@if(is_privilege(14,5))
 									<a class="btn-sm app-btn-secondary" href="{{ url('admin/variants/'.$list->sv_id) }}">Variants</a>
+									@endif
 								</td>
 							</tr>
 							@endforeach

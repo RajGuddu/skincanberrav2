@@ -29,7 +29,9 @@
                         
                     </div>
                 </form> */ ?>
+                @if(is_privilege(19,2))
                 <a href="{{ url('admin/holidays').'?add=1' }}" class="btn btn-secondary ms-2">Add</a>
+                @endif
             </div>
 
         </div>
@@ -91,11 +93,13 @@
                                         $tdStyle = "background-color:#d4edda !important;";
                                         @endphp
                                         <td style="{{ $tdStyle }}">
-                                            <a class="btn-sm app-btn-secondary"
-                                                href="{{ url('admin/holidays/'.$item->id) }}">Edit</a>
-
+                                            @if(is_privilege(19,3))
+                                            <a class="btn-sm app-btn-secondary" href="{{ url('admin/holidays/'.$item->id) }}">Edit</a>
+                                            @endif
+                                            @if(is_privilege(19,4))
                                             <a class="btn-sm app-btn-secondary" onclick="return confirm('Are u sure?')"
                                                 href="{{ url('admin/delete_holiday/'.$item->id) }}">Delete</a>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach

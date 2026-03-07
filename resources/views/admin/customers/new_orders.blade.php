@@ -39,11 +39,13 @@
                             {!! $status !!}
                             <div class="fw-bold mt-1">${{ $order->net_total }}</div>
                             <!-- Change Status Button -->
+                            @if(is_privilege(8,2) || is_privilege(9,2))
                             <button type="button" 
                                     class="btn btn-sm btn-link p-0 text-primary ms-1" 
                                     onclick="changeStatus({{ $order->id }})">
                                 Change Status
                             </button>
+                            @endif
                         </div>
                     </div>
 

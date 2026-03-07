@@ -62,9 +62,11 @@
 											value="{{ old('address', $settings->address ?? '') }}">
 									</div>
 								</div>
+								@if(is_privilege(20,2))
 								<div class="col-md-6">
 									<button type="submit" class="btn app-btn-primary">Save Changes</button>
 								</div>
+								@endif
 							</div>
 						</form>
 					</div><!--//app-card-body-->
@@ -142,9 +144,11 @@
 											value="{{ old('instagram_link', $settings->instagram_link ?? '') }}">
 									</div>
 								</div>
+								@if(is_privilege(20,2))
 								<div class="col-md-6">
 									<button type="submit" class="btn app-btn-primary">Save Changes</button>
 								</div>
+								@endif
 							</div>
 						</form>
 
@@ -173,10 +177,11 @@
 									</div>
 								</div>
 								
-								
+								@if(is_privilege(20,2))
 								<div class="col-md-12">
 									<button type="submit" class="btn app-btn-primary">Save Changes</button>
 								</div>
+								@endif
 							</div>
 						</form>
 					</div><!--//app-card-body-->
@@ -224,10 +229,11 @@
 											value="{{ old('marquee4', $settings->marquee4 ?? '') }}">
 									</div>
 								</div>
-								
+								@if(is_privilege(20,2))
 								<div class="col-md-12">
 									<button type="submit" class="btn app-btn-primary">Save Changes</button>
 								</div>
+								@endif
 							</div>
 						</form>
 					</div><!--//app-card-body-->
@@ -261,8 +267,9 @@
 								</select>
 								<small class="text-muted">You can select multiple holidays</small>
 							</div>
-
+							@if(is_privilege(20,2))
 							<button type="submit" class="btn app-btn-primary">Save Changes</button>
+							@endif
 						</form>
 					</div><!--//app-card-body-->
 				</div><!--//app-card-->
