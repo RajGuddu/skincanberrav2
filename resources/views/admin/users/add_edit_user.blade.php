@@ -1,5 +1,12 @@
 @extends('admin._layout.master')
 @section('content')
+<style>
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+</style>
 <div class="app-content pt-3 p-md-3 p-lg-4">
 	<div class="container-fluid">
 		<div class="d-flex align-items-center justify-content-between">
@@ -55,7 +62,16 @@
 									value="{{ old('address', $record->address ?? '') }}">
 								@error('address') <span class="text-danger"> {{ $message }} </span> @enderror
 							</div>
-							
+							<div class="mb-3">
+								<label for="address" class="form-label">Services Provided</label>
+								<div class="services-grid">
+									@if($services->isNotEmpty())
+									@foreach($services as $list)
+									<label><input type="checkbox" name="services[]" value="{{ $list->sv_id }}"> {{ $list->service_name }}</label>
+									@endforeach
+									@endif
+								</div>
+							</div>
 							
 							<div class="mb-3">
 								<label for="status" class="form-label">Status</label>

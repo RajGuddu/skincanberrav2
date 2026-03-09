@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Common_model;
+use App\Models\ServiceModel;
 
 class Users extends Controller
 {
@@ -57,6 +58,9 @@ class Users extends Controller
                 $post['email'] = $request->input('email');
                 $post['phone'] = $request->input('phone');
                 $post['address'] = $request->input('address');
+                if($request->services->isNotEmpty()){
+                    $post['services'] = implode(',',$request->services);
+                }
                 $post['privilege_id'] = 4;
                 $post['status'] = $request->input('status');
                 $password = mt_rand(100000, 999999);
@@ -88,6 +92,7 @@ class Users extends Controller
                 return redirect()->to('admin/users');
             }
         }
+        $data['services'] = ServiceModel::where('status',1)->orderBy('sv_id','desc')->get();
         return view('admin.users.add_edit_user', $data);
     }
     public function edit_user(Request $request, $user_id){
@@ -126,6 +131,9 @@ class Users extends Controller
                 $post['email'] = $request->input('email');
                 $post['phone'] = $request->input('phone');
                 $post['address'] = $request->input('address');
+                if(!empty($_POST['services'])){
+                    $post['services'] = implode(',',$request->services);
+                }
                 // $post['privilege_id'] = 4;
                 $post['status'] = $request->input('status');
                 // $password = mt_rand(100000, 999999);
@@ -160,6 +168,7 @@ class Users extends Controller
         if($user_id){
             $data['record'] = $this->commonmodel->crudOperation('R1','tbl_admin','',['user_id'=>$user_id]);
         }
+        $data['services'] = ServiceModel::where('status',1)->orderBy('sv_id','desc')->get();
         return view('admin.users.add_edit_user', $data);
     }
     
