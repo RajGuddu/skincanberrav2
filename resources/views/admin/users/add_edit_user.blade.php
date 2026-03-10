@@ -62,12 +62,24 @@
 									value="{{ old('address', $record->address ?? '') }}">
 								@error('address') <span class="text-danger"> {{ $message }} </span> @enderror
 							</div>
+
 							<div class="mb-3">
 								<label for="address" class="form-label">Services Provided</label>
+								<div>
+									<label>
+										@php $userServices = []; $allChecked = 0;
+										if(isset($record) && $record->services != ''){
+											$userServices = explode(',', $record->services);
+										}
+										if(count($userServices) == $services->count()) $allChecked = 1;
+										@endphp
+										<input type="checkbox" id="select_all" {{ $allChecked ?'checked':'' }}> <strong>Select All</strong>
+									</label>
+								</div>
 								<div class="services-grid">
 									@if($services->isNotEmpty())
 									@foreach($services as $list)
-									<label><input type="checkbox" name="services[]" value="{{ $list->sv_id }}"> {{ $list->service_name }}</label>
+									<label><input type="checkbox" class="service_checkbox" name="services[]" value="{{ $list->sv_id }}" {{ isset($record) && in_array($list->sv_id, $userServices) ?'checked':'' }}> {{ $list->service_name }}</label>
 									@endforeach
 									@endif
 								</div>
@@ -126,6 +138,25 @@
 	</div><!--//container-fluid-->
 </div><!--//app-content-->
 <script>
+	let selectAll = document.getElementById('select_all');
+	let checkboxes = document.querySelectorAll('.service_checkbox');
+
+	// Select All click
+	selectAll.addEventListener('change', function () {
+		checkboxes.forEach(cb => cb.checked = selectAll.checked);
+	});
+
+	// Individual checkbox change
+	checkboxes.forEach(cb => {
+		cb.addEventListener('change', function () {
+			if (!this.checked) {
+				selectAll.checked = false;
+			} else {
+				let allChecked = document.querySelectorAll('.service_checkbox:checked').length === checkboxes.length;
+				selectAll.checked = allChecked;
+			}
+		});
+	});
 	tinymce.init({
 		selector: '#description',
 		plugins: 'advlist autolink lists link image charmap preview anchor ' +

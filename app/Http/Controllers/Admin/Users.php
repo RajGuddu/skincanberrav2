@@ -133,31 +133,33 @@ class Users extends Controller
                 $post['address'] = $request->input('address');
                 if(!empty($_POST['services'])){
                     $post['services'] = implode(',',$request->services);
+                }else{
+                    $post['services'] = null;
                 }
                 // $post['privilege_id'] = 4;
                 $post['status'] = $request->input('status');
                 // $password = mt_rand(100000, 999999);
                 // $post['password'] = Hash::make($password,['rounds'=>12]);
 
-                $updated = $this->commonmodel->crudOperation('U','tbl_admin',$post,['user_id'=>$user_id]);
+                $updated = $this->commonmodel->updateRecord('tbl_admin',$post,['user_id'=>$user_id]);
 
                 if($updated){
-                    // $mailData = [
-                    //     'employee_name'   => $request->input('name'),
-                    //     'employee_email'  => $request->input('email'),
-                    //     'employee_password'  => $password,
-                    //     'created_at' => date('d-M-Y h:i A'),
-                        
-                    // ];
-                    // $mailTo = $request->input('email');
-                    // Mail::send('emailer.account_created', $mailData, function ($message) use ($mailTo){
-                    //     $message->to($mailTo)
-                    //             ->subject('Account Created');
-                    // });
-                    // Mail::send('emailer.new_emp_acc_create', $mailData, function ($message) use ($mailData){
-                    //     $message->to(ADMIN_MAIL_TO)
-                    //             ->subject('Employee Account Created –'.$mailData['employee_name']);
-                    // });
+                    if($user_id == 1){
+                        $admin_info = $this->commonmodel->crudOperation('R1','tbl_admin','',['user_id'=>$user_id]);
+                        $sessionData = array(
+                            'user_id' => $admin_info->user_id,
+                            'name' => $admin_info->name,
+                            'email' => $admin_info->email,
+                            'phone' => $admin_info->phone,
+                            'address' => $admin_info->address,
+                            'image' => $admin_info->image,
+                            'privilege_id' => $admin_info->privilege_id,
+                            'status' => $admin_info->status,
+                            'admindata' => true,
+                        );
+                        $request->session()->put($sessionData);
+                    }
+
                     $request->session()->flash('message',['msg'=>'Record updated successfully!','type'=>'success']);
                 }else{
                     $request->session()->flash('message',['msg'=>'Please Try After Sometimes...','type'=>'danger']);
@@ -193,87 +195,5 @@ class Users extends Controller
         }
         return redirect()->to('admin/users');
     }
-    /*public function variants(Request $request, $id=null,$vid=null){
-        $data = [];
-        if($request->isMethod('POST')){
-            $validated = $this->validate($request, [
-                'v_name' => 'required',
-                'v_url' => 'required',
-                'mrp' => 'required|integer',
-                'sp' => 'required|integer|lte:mrp',
-            ],
-            [
-                'v_url.required' => 'Url is required',
-            ]);
-            if($validated){
-                // print_r($_POST); exit;
-                    if($request->hasFile('photo')){
-                        if ($request->file('photo')->isValid()) {
-
-                            $file = $request->file('photo');
-                            do {
-                                $webpFilename = 'svariant-'. Str::random(8) .'.webp';
-                                $exists = ServiceVariantsModel::where('photo', $webpFilename)->exists();
-                            } while ($exists);
-                            $image = Image::make($file)->encode('webp', 80);
-                            $path = Storage::disk('public_root')->put('images/'. $webpFilename, (string) $image);
-                            if($path){
-                                if (isset($_POST['photo2']) && !empty($_POST['photo2'])) {
-                                    Storage::disk('public_root')->delete('images/' . $_POST['photo2']);
-                                }
-                                $post['photo'] = $webpFilename;
-                            }
-                        }
-                    }
-                    $post['sv_id'] = $id;
-                    $post['v_name'] = $request->input('v_name');
-                    $post['v_url'] = $request->input('v_url');
-                    $post['mrp'] = $request->input('mrp');
-                    $post['sp'] = $request->input('sp');
-                    $post['details'] = $request->input('details');
-                    $post['status'] = $request->input('status');
-                    if(!$vid){
-                        $post['added_at'] = date('Y-m-d H:i:s');
-                        $inserted = ServiceVariantsModel::create($post);
-
-                    }else{
-                        $post['update_at'] = date('Y-m-d H:i:s');
-                        $updated = ServiceVariantsModel::where('vid',$vid)->update($post);
-                    }
-                    if(isset($inserted)){
-                        $request->session()->flash('message',['msg'=>'Variants added successfully!','type'=>'success']);
-                    }elseif(isset($updated)){
-                        $request->session()->flash('message',['msg'=>'Variants updated successfully!','type'=>'success']);
-                    }else{
-                        $request->session()->flash('message',['msg'=>'Please Try After Sometimes...','type'=>'danger']);
-                    }
-
-                    return redirect()->to('admin/variants/'.$id);
-            }
-        }
-        if($vid){
-            $data['variant'] = ServiceVariantsModel::where('vid', $vid)->first();
-        }
-        $data['service'] = ServiceModel::where('sv_id', $id)->first();
-        $data['variants'] = ServiceVariantsModel::where('sv_id', $id)->orderBy('vid','desc')->get();
-        return view('admin.services.variantsIndex', $data);
-    }
-    public function delete_variants(Request $request, $id=null, $vid=null){
-        if($id){
-            $record = ServiceVariantsModel::where([['vid','=',$vid],['sv_id','=',$id]])->first();
-            if($record){
-                $imagePath = public_path('assets/uploads/images/' . $record->photo);
-                if (!empty($record->photo) && File::exists($imagePath)) {
-                    File::delete($imagePath);
-                }
-                if(ServiceVariantsModel::where('vid', $vid)->delete()){
-
-                    $request->session()->flash('message',['msg'=>'Record Deleted.','type'=>'success']);
-                }else{
-                    $request->session()->flash('message',['msg'=>'Please Try After Sometimes...','type'=>'danger']);
-                }
-            }
-        }
-        return redirect()->to('admin/variants/'.$id);
-    }*/
+    
 }

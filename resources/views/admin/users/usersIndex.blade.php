@@ -102,10 +102,11 @@
 								
 								<td class="cell">{!! $status !!}</td>
 								<td class="cell">
-									@if($list->user_id != 1)
+									
 									@if(is_privilege(2,3))
 									<a class="btn-sm app-btn-secondary" href="{{ url('admin/edit_user/'.$list->user_id) }}">Edit</a>
 									@endif
+									@if($list->user_id != 1)
 									@if(is_privilege(2,4))
 									<a class="btn-sm app-btn-secondary" onclick="return confirm('Are u sure?')" href="{{ url('admin/delete_user/'.$list->user_id) }}">Delete</a>
 									@endif
