@@ -342,12 +342,19 @@ class Common_model extends Model
         $totalServiceTimes = DB::table('tbl_service_time')
             ->where('status', 1)
             ->count();
+        // Step 2: Total active staff
+        $totalStaff = DB::table('tbl_admin')
+            ->where('status', 1)
+            ->count();
+        // Step 3: Total capacity per day
+        $totalCapacity = $totalServiceTimes * $totalStaff;
 
-        // Step 2: Get dates where all time slots are booked
+
+        // Step 4: Get fully booked dates
         $bookedDate = DB::table('tbl_service_book_online')
             ->select('service_date')
             ->groupBy('service_date')
-            ->havingRaw('COUNT(DISTINCT st_id) = ?', [$totalServiceTimes])
+            ->havingRaw('COUNT(*) >= ?', [$totalCapacity])
             ->pluck('service_date')
             ->toArray();
 
@@ -553,6 +560,18 @@ class Common_model extends Model
             ->whereRaw('FIND_IN_SET(?, time_slot)', [$slotId])
             ->exists();
         return $exists;
+    }
+    public function get_leave(){
+        $results = DB::table('tbl_leave as l')
+            ->join('tbl_admin as a', 'a.user_id', '=', 'l.user_id')
+            // ->join('tbl_services_variants as v', 'v.vid', '=', 'b.vid')
+            // ->join('tbl_service_time as t', 't.st_id', '=', 'b.st_id')
+
+            ->select(
+                DB::raw("l.*, a.name")
+            )
+            ->get();
+        return $results;
     }
     /**************************settings********************** */
     /*public function get_setting(){

@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\Appointment;
 use App\Http\Controllers\Admin\Courses;
 use App\Http\Controllers\Admin\Holidays;
 use App\Http\Controllers\Admin\Users;
+use App\Http\Controllers\Admin\Leave;
 use App\Http\Controllers\Shop;
 use App\Http\Controllers\Member;
 use App\Http\Controllers\Test;
@@ -218,6 +219,11 @@ Route::middleware(['Authcheck'])->group(function () {
     Route::match(['get', 'post'], 'admin/holidays', [Holidays::class,'index']);
     Route::match(['get', 'post'], 'admin/holidays/{id}', [Holidays::class,'index']);
     Route::get('admin/delete_holiday/{id}', [Holidays::class,'delete_holiday']);
+
+    /*******************************************Emp Leave*************************************** */
+    Route::match(['get', 'post'], 'admin/leave', [Leave::class,'index']);
+    Route::match(['get', 'post'], 'admin/leave/{id}', [Leave::class,'index']);
+    Route::get('admin/delete_leave/{id}', [Leave::class,'delete_leave']);
 
     /******************************************Authentication*********************************** */
     Route::match(['get', 'post'], 'admin/users', [Users::class,'index']);

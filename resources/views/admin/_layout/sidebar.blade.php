@@ -262,6 +262,24 @@ $allOrdersCount = $commonmodel->get_all_new_product_order()->count();
                     </a><!--//nav-link-->
                 </li><!--//nav-item-->
                 @endif
+                @if(is_privilege(21))
+                <li class="nav-item">
+                    <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                    <a class="nav-link {{ ($segment2 == 'leave')?'active':'' }}"
+                        href="{{ url('admin/leave') }}">
+                        <span class="nav-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" 
+                            class="bi bi-calendar-check" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v1H0V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5h16v9z"/>
+                            <path d="M10.854 9.146a.5.5 0 0 1 0 .708l-2.5 2.5a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L8 11.293l2.146-2.147a.5.5 0 0 1 .708 0z"/>
+                            </svg>
+
+
+                        </span>
+                        <span class="nav-link-text">Employee Leave</span>
+                    </a><!--//nav-link-->
+                </li><!--//nav-item-->
+                @endif
                 @if(is_privilege(2))
                 <li class="nav-item has-submenu">
                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->

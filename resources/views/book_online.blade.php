@@ -113,6 +113,21 @@
                         </select>
                         <span class="text-danger error-vid" style="display:none;">Please select variant!</span>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Select Technician</label>
+                        <select class="form-select border-dark" id="vid" name="vid">
+                            <option value="">Please select technician!</option>
+                            @if($variants->isNotEmpty())
+                            @foreach($variants as $variant)
+                            @php
+                                $selected = '';
+                                if(session('vid') == $variant->vid) $selected = 'selected'; @endphp
+                            <option value="{{ $variant->vid }}" {{ $selected }}>{{ $variant->v_name.' $'.$variant->sp }} </option>
+                            @endforeach
+                            @endif
+                        </select>
+                        <span class="text-danger error-vid" style="display:none;">Please select variant!</span>
+                    </div>
 
                     <div class="text-danger error-date" style="display:none;">Please select a date!</div>
                     <div class="text-danger error-time" style="display:none;">Please select a time slot!</div>
