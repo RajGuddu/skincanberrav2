@@ -16,6 +16,8 @@
                         <input type="hidden" name="vid" value="{{ session('vid') }}">
                         <input type="hidden" name="selected_date" value="{{ session('selected_date') }}">
                         <input type="hidden" name="selected_st_id" value="{{ session('selected_st_id') }}">
+                        <input type="hidden" name="selected_st_id" value="{{ session('selected_st_id') }}">
+                        <input type="hidden" name="selected_user_id" value="{{ session('selected_user_id') }}">
                         <input type="hidden" name="book_deposit" id="book_deposit" value="1">
                         <div class="row mb-3">
                             <div class="col-md-6">

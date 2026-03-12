@@ -115,18 +115,18 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Select Technician</label>
-                        <select class="form-select border-dark" id="vid" name="vid">
+                        <select class="form-select border-dark" id="tech_id" name="tech_id">
                             <option value="">Please select technician!</option>
-                            @if($variants->isNotEmpty())
-                            @foreach($variants as $variant)
+                            @if(!empty($technician))
+                            @foreach($technician as $list)
                             @php
                                 $selected = '';
-                                if(session('vid') == $variant->vid) $selected = 'selected'; @endphp
-                            <option value="{{ $variant->vid }}" {{ $selected }}>{{ $variant->v_name.' $'.$variant->sp }} </option>
+                                if(session('selected_user_id') == $list->user_id) $selected = 'selected'; @endphp
+                            <option value="{{ $list->user_id }}" {{ $selected }}>{{ ucwords($list->name) }} </option>
                             @endforeach
                             @endif
                         </select>
-                        <span class="text-danger error-vid" style="display:none;">Please select variant!</span>
+                        <span class="text-danger error-tech_id" style="display:none;">Please select variant!</span>
                     </div>
 
                     <div class="text-danger error-date" style="display:none;">Please select a date!</div>

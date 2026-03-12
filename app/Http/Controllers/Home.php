@@ -125,6 +125,7 @@ class Home extends Controller
                 'sv_id' => $request->input('sv_id'),
                 'selected_date' => $request->input('selected_date'),
                 'selected_st_id' => $request->input('selected_st_id'),
+                'selected_user_id' => $request->input('tech_id'),
                 'isBooking' => true
             ]);
             session()->save();
@@ -172,6 +173,7 @@ class Home extends Controller
         $data['st_id'] = $result['st_id'];
         $data['services'] = $this->commonmodel->crudOperation('RA','tbl_services','',['status'=>1],['sv_id','DESC']);
         $data['variants'] = $this->commonmodel->crudOperation('RA','tbl_services_variants','',[['sv_id','=',session('sv_id')],['status','=',1]],['vid','DESC']);
+        $data['technician'] = $result['technician'];
 
         return view('book_online', $data);
     }
@@ -215,6 +217,7 @@ class Home extends Controller
     public function get_availability_btn_html($date){
         $html = '';
         $st_id = '';
+        $technician = [];
         if($date != null){
             $formattedDate = Carbon::parse($date)->format('l j F');
             $html = '<p class="fw-semibold mt-3">Availability for '.$formattedDate.'</p>';
@@ -224,9 +227,11 @@ class Home extends Controller
                 $html .= '<div class="row g-2">';
                 $k = 0;
                 foreach($serviceTime as $list){
-                    $isBooked = $this->commonmodel->crudOperation('RA','tbl_service_book_online','',[['st_id','=',$list->st_id],['service_date','=',$date]]);
+                    // $isBooked = $this->commonmodel->crudOperation('RA','tbl_service_book_online','',[['st_id','=',$list->st_id],['service_date','=',$date]]);
+                    $isBooked = $this->commonmodel->isSlotBooked($list->st_id, $date);
                     $isClosed = $this->commonmodel->isServiceTimeSlotClosed($date, $list->st_id);
-                    if((!$isBooked || $isBooked->count() == 0) && !$isClosed) {
+                    $isLeave = $this->commonmodel->isStaffLeave($date, $list->st_id);
+                    if(!$isBooked && !$isClosed && !$isLeave) {
                         $active = '';
                         if($k == 0) { $st_id=$list->st_id; $active = 'active'; }
                         $html .= '<div class="col-6 d-grid">
@@ -237,11 +242,17 @@ class Home extends Controller
                 }
                 $html .= '</div>';
             }
+            //technician list
+            if(session()->has('sv_id')){
+                $technician = $this->commonmodel->getAvailableEmployees(session('sv_id'), $date, $st_id);
+                // echo '<pre>';print_r($users); exit;
+            }
         }
 
         return $result = [
             'st_id' => $st_id,
-            'html' => $html
+            'html' => $html,
+            'technician' => $technician
         ];
             
     }
@@ -493,6 +504,7 @@ class Home extends Controller
                 $validated = $this->validate($request, $rules);
                 if($validated){
                     // print_r($_POST); exit;
+                    $post['user_id'] = $request->input('selected_user_id');
                     $post['sv_id'] = $request->input('sv_id');
                     $post['vid'] = $request->input('vid');
                     $post['st_id'] = $request->input('selected_st_id');

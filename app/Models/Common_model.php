@@ -361,6 +361,18 @@ class Common_model extends Model
         return $bookedDate;
 
     }
+    function isSlotBooked($st_id, $service_date){
+        $bookingCount = DB::table('tbl_service_book_online')
+            ->where('st_id', $st_id)
+            ->whereDate('service_date', $service_date)
+            ->count();
+
+        $staffCount = DB::table('tbl_admin')
+            ->where('status', 1)
+            ->count();
+
+        return $bookingCount >= $staffCount;
+    }
     public function get_booking_service(){
         $record = DB::table('tbl_services_variants as v')
             ->join('tbl_services as s', 's.sv_id', '=', 'v.sv_id')
@@ -561,6 +573,23 @@ class Common_model extends Model
             ->exists();
         return $exists;
     }
+    public function isStaffLeave($date, $slotId){ //use in both (admin+front)
+        // total staff
+        $totalStaff = DB::table('tbl_admin')
+            ->where('status', 1)
+            ->count();
+
+        $leaveStaff = DB::table('tbl_leave')
+            ->where('status', 1)
+            ->whereRaw('? BETWEEN date_from AND date_to', [$date])
+            ->where(function ($q) use ($slotId) {
+                $q->where('alltime', 1)
+                ->orWhereRaw('FIND_IN_SET(?, time_slot)', [$slotId]);
+            })
+            ->count();
+        // if all staff on leave
+        return $leaveStaff >= $totalStaff;
+    }
     public function get_leave(){
         $results = DB::table('tbl_leave as l')
             ->join('tbl_admin as a', 'a.user_id', '=', 'l.user_id')
@@ -572,6 +601,24 @@ class Common_model extends Model
             )
             ->get();
         return $results;
+    }
+    public function getAvailableEmployees($sv_id, $date, $slotId){
+        $bookedUsers = DB::table('tbl_service_book_online')
+            ->whereDate('service_date', $date)
+            ->where('st_id', $slotId)
+            ->pluck('user_id')
+            ->toArray();
+        // print_r($bookedUsers); 
+        // echo $sv_id; 
+        // exit;
+
+        $employees = DB::table('tbl_admin')
+            ->where('status', 1)
+            ->whereRaw('FIND_IN_SET(?, services)', [$sv_id])
+            ->whereNotIn('user_id', $bookedUsers)
+            ->get();
+
+        return $employees;
     }
     /**************************settings********************** */
     /*public function get_setting(){
