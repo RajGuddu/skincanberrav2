@@ -247,7 +247,17 @@
             },
             success: function (response) {
                 if (response.success) {
-                    console.log(response.html);
+                    console.log(response.technician);
+
+                    let techSelect = $('#tech_id');
+                    techSelect.html('<option value="">Please select technician!</option>');
+
+                    $.each(response.technician, function (index, tech) {
+                        techSelect.append(
+                            '<option value="' + tech.user_id + '">' + tech.name + '</option>'
+                        );
+                    });
+
                     $('#availability-div').html(response.html);
                     $('#selected_date').val(response.selected_date);
                     $('#selected_st_id').val(response.selected_st_id);
@@ -263,11 +273,11 @@
     // Check Availability button click event
     // $('#nextAvailBtn').on('click', function() {
     $(document).on('click', '#nextAvailBtn', function() {
-        var nextDate = $(this).data('next_date'); // data-next_date ka value lena
-        var $targetDay = $('.day[data-date="' + nextDate + '"]'); // calendar me matching date find karna
+        var nextDate = $(this).data('next_date'); 
+        var $targetDay = $('.day[data-date="' + nextDate + '"]'); 
 
         if ($targetDay.length) {
-            $targetDay.trigger('click'); // programmatically click karna
+            $targetDay.trigger('click'); 
         } else {
             toastr.error('No matching date found in calendar:');
         }
@@ -326,10 +336,58 @@ $(document).on('click', '#availability-div button', function() { // event for bu
     $(this).addClass('active');
     var selectedId = $(this).data('st_id');
     $('#selected_st_id').val(selectedId);
+
+    //append technicians
+    var selected_date = $('#selected_date').val();
+    var sv_id = $('#sv_id').val();
+
+    if(sv_id){
+       $.ajax({
+            url: window.APP_URL + "/get_available_employees_by_ajax",
+            type: "POST",
+            dataType: "json",
+            
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                sv_id: sv_id,
+                selected_date: selected_date,
+                selected_st_id: selectedId,
+                
+            },
+            beforeSend: function() {
+                $('#ajax-loader').show();
+            },
+            success: function(response) {
+                if (response.success) {
+                    console.log(response.technician);
+
+                    let techSelect = $('#tech_id');
+                    techSelect.html('<option value="">Please select technician!</option>');
+
+                    $.each(response.technician, function (index, tech) {
+                        techSelect.append(
+                            '<option value="' + tech.user_id + '">' + tech.name + '</option>'
+                        );
+                    });
+                }else{
+                    toastr.error("Soory, Something went wrong!");
+                }
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+            },
+            complete: function() {
+                $('#ajax-loader').hide();
+            }
+        }); 
+    }
 });
 function getVariants(obj){
     // alert(obj.value);
     var sv_id = obj.value;
+    var selected_date = $('#selected_date').val();
+    var selected_st_id = $('#selected_st_id').val();
+    // console.log(selected_date+" "+selected_st_id);
     if(sv_id){
         $.ajax({
             url: window.APP_URL + "/get_variants_by_ajax",
@@ -339,6 +397,8 @@ function getVariants(obj){
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
                 sv_id: sv_id,
+                selected_date: selected_date,
+                selected_st_id: selected_st_id,
                 
             },
             beforeSend: function() {
@@ -348,7 +408,15 @@ function getVariants(obj){
                 if (response.success) {
                     console.log(response.html);
                     $('#vid').html(response.html);
-                    // toastr.success("Product added into cart");
+
+                    let techSelect = $('#tech_id');
+                    techSelect.html('<option value="">Please select technician!</option>');
+
+                    $.each(response.technician, function (index, tech) {
+                        techSelect.append(
+                            '<option value="' + tech.user_id + '">' + tech.name + '</option>'
+                        );
+                    });
                 }else{
                     toastr.error("Soory, Something went wrong!");
                 }
@@ -363,6 +431,7 @@ function getVariants(obj){
     }
 }
 
+
 function validateForm() {
     let isValid = true;
 
@@ -374,6 +443,7 @@ function validateForm() {
     let selected_st_id = $('#selected_st_id').val().trim();
     let sv_id = $('#sv_id').val().trim();
     let vid = $('#vid').val().trim();
+    let tech_id =  $('#tech_id').val().trim();
 
     // validate hidden fields
     if (selected_date === '') {
@@ -394,6 +464,11 @@ function validateForm() {
     // validate variant
     if (vid === '') {
         $('.error-vid').show();
+        isValid = false;
+    }
+    // validate technicians
+    if (tech_id === '') {
+        $('.error-tech_id').show();
         isValid = false;
     }
 

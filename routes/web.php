@@ -59,6 +59,7 @@ Route::get('book-appointment/{id}', [Home::class,'book_an_appointment']);
 Route::match(['get','post'],'get_variants_by_ajax', [Home::class,'get_variants_by_ajax']);
 Route::match(['get','post'],'get_available_time_by_ajax', [Home::class,'get_available_time_by_ajax']);
 Route::match(['get','post'],'check_next_availability_by_ajax', [Home::class,'check_next_availability_by_ajax']);
+Route::match(['get','post'],'get_available_employees_by_ajax', [Home::class,'get_available_employees_by_ajax']);
 Route::match(['get','post'],'book-online', [Home::class,'book_online']);
 Route::match(['get','post'],'booking-form', [Home::class,'booking_form']);
 Route::get('booking-success', [Home::class,'booking_success']); // for data update 
@@ -66,6 +67,9 @@ Route::get('payment-success', [Home::class,'payment_success']); // for thank you
 Route::get('payment-cancel', [Home::class,'payment_cancel']);
 Route::get('courses', [CoursesFront::class,'index']);
 Route::get('course-detail', [CoursesFront::class,'course_detail']);
+
+
+Route::get('remove-ses', [Home::class,'remove_ses']);
 
 
 //for testing

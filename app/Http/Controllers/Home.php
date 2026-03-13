@@ -112,6 +112,11 @@ class Home extends Controller
         return redirect()->to(url('book-online'));
     }
     public function book_an_appointment($sv_id = null){
+        if($sv_id == null){
+            $service = $this->commonmodel->crudOperation('R1','tbl_services','',['status'=>1]);
+            // print_r($service); exit;
+            $sv_id = $service->sv_id ?? '';
+        }
         if($sv_id != null){
             session()->put('sv_id', $sv_id);
             session()->save();
@@ -180,6 +185,10 @@ class Home extends Controller
     public function get_variants_by_ajax(Request $request){
         if($request->isMethod('POST')){
             $sv_id = $request->input('sv_id');
+            session()->put('sv_id', $sv_id);
+            session()->save();
+            $date = $request->input('selected_date');
+            $st_id = $request->input('selected_st_id');
             $variants = $this->commonmodel->crudOperation('RA','tbl_services_variants','',[['sv_id','=',$sv_id],['status','=',1]],['vid','DESC']);
             $html = '<option value="">Please select variants!</option>';
             if($variants->isNotEmpty()){
@@ -188,11 +197,13 @@ class Home extends Controller
                 }
                 $result['success'] = true;
                 $result['html'] = $html;
+                
 
             }else{
                 $result['html'] = '<option value="">-----------------------No Variants------------------</option>';
                 $result['success'] = true;
             }
+            $result['technician'] = $this->commonmodel->getAvailableEmployees($sv_id, $date, $st_id);
             return json_encode($result); exit;
         }
         return redirect()->to(url('book-online'));
@@ -210,6 +221,7 @@ class Home extends Controller
             $result['html'] = $res['html'];
             $result['selected_date'] = $b_date;
             $result['selected_st_id'] = $res['st_id'];
+            $result['technician'] = $res['technician'];
             return json_encode($result); exit;
         }
         return redirect()->to(url('book-online'));
@@ -245,7 +257,7 @@ class Home extends Controller
             //technician list
             if(session()->has('sv_id')){
                 $technician = $this->commonmodel->getAvailableEmployees(session('sv_id'), $date, $st_id);
-                // echo '<pre>';print_r($users); exit;
+                // echo '<pre>';print_r($technician); exit;
             }
         }
 
@@ -255,6 +267,18 @@ class Home extends Controller
             'technician' => $technician
         ];
             
+    }
+    public function get_available_employees_by_ajax(Request $request){
+        if($request->isMethod('POST')){
+            $sv_id = $request->input('sv_id');
+            $date = $request->input('selected_date');
+            $st_id = $request->input('selected_st_id');
+            
+            $result['technician'] = $this->commonmodel->getAvailableEmployees($sv_id, $date, $st_id);
+            $result['success'] = true;
+            
+            return json_encode($result); exit;
+        }
     }
     public function check_next_availability_by_ajax(Request $request){
         if($request->isMethod('POST')){
@@ -560,7 +584,8 @@ class Home extends Controller
                             'sv_id',
                             'selected_date',
                             'selected_st_id',
-                            'isBooking'
+                            'isBooking',
+                            'selected_user_id',
                         ]);
                         // return json_encode([
                         //     'status' => 'success'
@@ -772,6 +797,17 @@ class Home extends Controller
         echo '<pre>';print_r($items);
         echo $items[1]['name'];
         echo $cart->getSubTotal();
+    }
+    public function remove_ses(){
+        session()->forget([
+                    'vid',
+                    'sv_id',
+                    'selected_date',
+                    'selected_st_id',
+                    'isBooking',
+                    'selected_user_id'
+                ]);
+        return redirect()->to(url('/'));
     }
     
 }

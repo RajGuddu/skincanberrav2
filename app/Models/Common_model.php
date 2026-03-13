@@ -367,11 +367,30 @@ class Common_model extends Model
             ->whereDate('service_date', $service_date)
             ->count();
 
-        $staffCount = DB::table('tbl_admin')
+        $leaveStaff = DB::table('tbl_leave')
             ->where('status', 1)
-            ->count();
+            ->whereRaw('? BETWEEN date_from AND date_to', [$service_date])
+            ->where(function ($q) use ($st_id) {
+                $q->where('alltime', 1)
+                ->orWhereRaw('FIND_IN_SET(?, time_slot)', [$st_id]);
+            })
+            ->pluck('user_id')
+            ->toArray();
 
-        return $bookingCount >= $staffCount;
+        $query = DB::table('tbl_admin')
+            ->where('status', 1);
+            if(session('sv_id')) {
+                $query->whereRaw("FIND_IN_SET(?, services)", [session('sv_id')]);
+            }
+
+            if(!empty($leaveStaff)){
+                $query->whereNotIn('user_id', $leaveStaff);
+            }
+            $staffCount = $query->count();
+            // echo $staffCount; 
+
+        return  $bookingCount >= $staffCount;
+        // exit;
     }
     public function get_booking_service(){
         $record = DB::table('tbl_services_variants as v')
@@ -575,9 +594,14 @@ class Common_model extends Model
     }
     public function isStaffLeave($date, $slotId){ //use in both (admin+front)
         // total staff
-        $totalStaff = DB::table('tbl_admin')
-            ->where('status', 1)
-            ->count();
+        $query = DB::table('tbl_admin')
+                ->where('status', 1);
+            if(session('sv_id')) {
+                $query->whereRaw("FIND_IN_SET(?, services)", [session('sv_id')]);
+            }
+            
+        $totalStaff = $query->count();
+        // echo $totalStaff;
 
         $leaveStaff = DB::table('tbl_leave')
             ->where('status', 1)
@@ -588,7 +612,8 @@ class Common_model extends Model
             })
             ->count();
         // if all staff on leave
-        return $leaveStaff >= $totalStaff;
+        // echo $leaveStaff; exit;
+        return $leaveStaff >= $totalStaff; 
     }
     public function get_leave(){
         $results = DB::table('tbl_leave as l')
@@ -608,15 +633,25 @@ class Common_model extends Model
             ->where('st_id', $slotId)
             ->pluck('user_id')
             ->toArray();
-        // print_r($bookedUsers); 
-        // echo $sv_id; 
-        // exit;
+        
+        $leaveStaff = DB::table('tbl_leave')
+            ->where('status', 1)
+            ->whereRaw('? BETWEEN date_from AND date_to', [$date])
+            ->where(function ($q) use ($slotId) {
+                $q->where('alltime', 1)
+                ->orWhereRaw('FIND_IN_SET(?, time_slot)', [$slotId]);
+            })
+            ->pluck('user_id')
+            ->toArray();
 
         $employees = DB::table('tbl_admin')
             ->where('status', 1)
             ->whereRaw('FIND_IN_SET(?, services)', [$sv_id])
             ->whereNotIn('user_id', $bookedUsers)
+            ->whereNotIn('user_id', $leaveStaff)
             ->get();
+
+            // print_r($employees); exit;
 
         return $employees;
     }

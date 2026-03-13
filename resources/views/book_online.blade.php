@@ -126,7 +126,7 @@
                             @endforeach
                             @endif
                         </select>
-                        <span class="text-danger error-tech_id" style="display:none;">Please select variant!</span>
+                        <span class="text-danger error-tech_id" style="display:none;">Please select technician!</span>
                     </div>
 
                     <div class="text-danger error-date" style="display:none;">Please select a date!</div>
