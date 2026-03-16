@@ -28,6 +28,7 @@ class Appointment extends Controller
         if($request->isMethod('POST')){
             // print_r($_POST); exit;
 
+            $post['user_id'] = $_POST['user_id'];
             $post['service_date'] = $_POST['service_date'];
             $post['st_id'] = $_POST['st_id'];
             $post['status'] = $_POST['status'];
@@ -85,7 +86,7 @@ class Appointment extends Controller
             }else{
                 $request->session()->flash('message',['msg'=>'Something went wrong. try again...','type'=>'danger']);
             }
-            return redirect()->to('admin/appointment/'.$id);
+            return redirect()->to('admin/appointment');
         }
 
         if($id != null){
@@ -93,6 +94,7 @@ class Appointment extends Controller
             if($record){
                 $data['availableTimes'] = $this->commonmodel->get_available_times($record->st_id, $record->service_date);
                 $data['record'] = $record;
+                $data['technician'] = $this->commonmodel->getAvailableEmployees($record->sv_id, $record->service_date, $record->st_id);
             }
             
         }
@@ -137,6 +139,36 @@ class Appointment extends Controller
         }
         echo $html; exit;
     }
+    public function get_technicians(Request $request){
+        if ($request->isMethod('post')) {
+
+            $sv_id = $request->sv_id;
+            $service_date = $request->service_date 
+                ? date('Y-m-d', strtotime($request->service_date)) 
+                : null;
+            $st_id = $request->st_id;
+
+            $technicians = $this->commonmodel->getAvailableEmployees($sv_id, $service_date, $st_id);
+
+            $html = '<option value="">Select Technician</option>';
+
+            if(session('privilege_id') == 1){
+                foreach($technicians as $tech){
+                    $html .= '<option value="'.$tech->user_id.'">'.ucwords($tech->name).'</option>';
+                }
+            }else{
+                foreach($technicians as $tech){
+                    if($tech->user_id == session('user_id'))
+                        $html .= '<option value="'.$tech->user_id.'" selected>'.ucwords($tech->name).'</option>';
+                }
+            }
+
+            return $html;
+
+            // echo $sv_id.' '.$service_date.' '.$st_id;
+            exit;
+        }
+    }
     // ==========================Appointment List==============================
     public function appointment_list(Request $request, $id=null){
         if($request->isMethod('POST')){
@@ -172,6 +204,7 @@ class Appointment extends Controller
             }
             if($request->formname == 'appoint'){
                 // echo '<pre>'; print_r($_POST); exit;
+                $post['user_id'] = $_POST['user_id'];
                 $post['sv_id'] = $_POST['sv_id'];
                 $post['vid'] = $_POST['vid'];
                 $post['st_id'] = $_POST['st_id'];
@@ -289,10 +322,16 @@ class Appointment extends Controller
                 $data['availableTimes'] = $this->commonmodel->get_available_times($record->st_id, $record->service_date);
                 $data['variants'] = $this->commonmodel->crudOperation('RA','tbl_services_variants','',[['sv_id','=',$record->sv_id],['status','=',1]],['vid','DESC']);
                 $data['record'] = $record;
+                $data['technician'] = $this->commonmodel->getAvailableEmployees($record->sv_id, $record->service_date, $record->st_id);
             }
         }
-        $data['listData'] = $this->commonmodel->get_appointment_list();
+        if(session('privilege_id') == 1){
+            $data['listData'] = $this->commonmodel->get_appointment_list();
+        }else{
+            $data['listData'] = $this->commonmodel->get_appointment_list(session('user_id'));
+        }
         $data['services'] = $this->commonmodel->crudOperation('RA','tbl_services','',['status'=>1],['sv_id','DESC']);
+        $data['users'] = $this->commonmodel->crudOperation('RA','tbl_admin','',['status'=>1]);
         return view('admin.appointment.appointment_list', $data);
 
     }
@@ -309,16 +348,25 @@ class Appointment extends Controller
     }
     public function search_appointment(Request $request){
         if($request->isMethod('POST')){
-            session([
-                'search' => $request->search,
-                // 'search_email' => $request->email,
-            ]);
+            if($request->filled('search')){
+                session([
+                    'search' => $request->search,
+                ]);
+            }
+            if($request->filled('technician')){
+                session([
+                    'technician' => $request->technician,
+                ]);
+            }
         }
         return redirect()->to('admin/appointment-list');
     }
     public function search_reset(Request $request){
         if(session()->has('search')){
             session()->remove('search');
+        }
+        if(session()->has('technician')){
+            session()->remove('technician');
         }
         return redirect()->to('admin/appointment-list');
     }

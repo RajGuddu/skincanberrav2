@@ -97,6 +97,7 @@
             <form action="{{ url()->current() }}" id="appointmentForm" method="post">
             @csrf
             <input type="hidden" name="id" value="{{ $record->id ?? '' }}">
+            <input type="hidden" name="sv_id" id="sv_id" value="{{ $record->sv_id ?? '' }}">
             
             <!-- Client Info Box -->
             <div class="p-3 rounded mb-3 shadow-sm"
@@ -148,7 +149,21 @@
                 @endif
               </select>
               <input type="hidden" name="old_st_id" value="{{ $record->st_id ?? '' }}" >
+            </div>
 
+            <div class="mb-3">
+              <label class="form-label">Technician</label>
+              <select name="user_id" id="technician" class="form-control">
+                <option value="">Select Technician</option>
+                @if(isset($record))
+                <option value="{{ $record->user_id }}" selected>{{ ucwords($record->technician) }}</option>
+                @endif
+                @if(isset($technician) && $technician->isNotEmpty())
+                @foreach($technician as $list)
+                <option value="{{ $list->user_id }}">{{ ucwords($list->name) }}</option>
+                @endforeach
+                @endif
+              </select>
             </div>
 
             <div class="mb-3">
@@ -193,7 +208,7 @@
           <li class="list-group-item"><strong>Date:</strong> <span id="modalDate"></span></li>
           <li class="list-group-item"><strong>Start Time:</strong> <span id="modalStart"></span></li>
           <li class="list-group-item"><strong>Duration:</strong> <span id="modalDuration"></span> minutes</li>
-          <!-- <li class="list-group-item"><strong>Price:</strong> <span id="modalPrice"></span> </li> -->
+          <li class="list-group-item"><strong>Technician:</strong> <span id="modalTechnician"></span> </li>
           <li class="list-group-item d-flex justify-content-between">
               <span><strong>Total Amount:</strong> $<span id="totalAmount"></span></span>
               <span><strong>Total Paid:</strong> $<span id="totalPaid"></span></span>
@@ -233,9 +248,39 @@
             } else {
               $('#serviceTime').append('<option>No slots available</option>');
             }
+            loadTechnicians();
         }
     });
   });
+
+  $('#serviceTime').change(function(){
+      loadTechnicians();
+  });
+
+  function loadTechnicians(){
+    var serviceDate = $('#serviceDate').val();
+    var serviceTime = $('#serviceTime').val();
+    var sv_id = $('#sv_id').val();
+
+    if(serviceDate && serviceTime){
+        $.ajax({
+            url: "{{ url('admin/get-technicians') }}",
+            type: "POST",
+
+            data: {
+                _token: "{{ csrf_token() }}",
+                service_date: serviceDate,
+                st_id: serviceTime,
+                sv_id: sv_id
+            },
+            success: function(res){
+                console.log(res); 
+                // return false;
+                $('#technician').html(res);
+            }
+        });
+    }
+  }
 
   $(document).ready(function() {
 
@@ -248,6 +293,7 @@
         // Get values
         let serviceDate = $('#serviceDate').val().trim();
         let serviceTime = $('#serviceTime').val();
+        let technician = $('#technician').val();
         let status = $('#status').val();
 
         // Reset previous errors
@@ -265,6 +311,13 @@
             isValid = false;
             errors.push("Please select service time.");
             $('#serviceTime').addClass('is-invalid');
+        }
+
+        // Validate Technician
+        if (technician === "" || technician === null) {
+            isValid = false;
+            errors.push("Please select technicians.");
+            $('#technician').addClass('is-invalid');
         }
 
         // Validate Status
@@ -439,6 +492,7 @@ function showErrorToast(msg) {
               </a>
             </div>
             <div class="small">${a.service}</div>
+            <div class="small">Technician: ${a.technician}</div>
             <div class="small"><span class="badge badge-tiny bg-white text-secondary me-2">${status}</span><a href="${editURL}" class="appointment-link">Edit</a></div>
           `;
           }
@@ -468,7 +522,7 @@ function showErrorToast(msg) {
     document.getElementById('modalDate').textContent = new Date(appt.date).toLocaleDateString('en-GB');
     document.getElementById('modalStart').textContent = time12;
     document.getElementById('modalDuration').textContent = appt.duration;
-    // document.getElementById('modalPrice').textContent = appt.price;
+    document.getElementById('modalTechnician').textContent = appt.technician;
     document.getElementById('totalAmount').textContent = appt.total_amount;
     document.getElementById('totalPaid').textContent = appt.paid_amount;
     document.getElementById('totalDues').textContent = appt.dues_amount;

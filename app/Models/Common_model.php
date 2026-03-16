@@ -415,6 +415,8 @@ class Common_model extends Model
             ->join('tbl_services as s', 's.sv_id', '=', 'b.sv_id')
             ->join('tbl_services_variants as v', 'v.vid', '=', 'b.vid')
             ->join('tbl_service_time as t', 't.st_id', '=', 'b.st_id')
+            ->join('tbl_admin as a', 'a.user_id', '=', 'b.user_id')
+            ->where('b.user_id', session('user_id'))
             ->select(
                 DB::raw("CONCAT(b.first_name, ' ', b.last_name) AS name"),
                 'b.id as book_id',
@@ -427,7 +429,8 @@ class Common_model extends Model
                 't.serv_time as start',
                 'v.v_name as variant',
                 'v.duration as duration',
-                'v.sp as price'
+                'v.sp as price',
+                'a.name as technician'
             )
             ->orderBy('b.service_date', 'ASC')
             ->get();
@@ -454,6 +457,7 @@ class Common_model extends Model
                 'total_amount'    => $row->total_amount,
                 'paid_amount'    => $row->paid_amount,
                 'dues_amount'    => $row->dues_amount,
+                'technician'    => $row->technician,
             ];
         });
         return json_encode($formatted);
@@ -498,6 +502,7 @@ class Common_model extends Model
             ->join('tbl_services as s', 's.sv_id', '=', 'b.sv_id')
             ->join('tbl_services_variants as v', 'v.vid', '=', 'b.vid')
             ->join('tbl_service_time as t', 't.st_id', '=', 'b.st_id')
+            ->join('tbl_admin as a', 'a.user_id', '=', 'b.user_id')
 
             ->select(
                 DB::raw("b.*, CONCAT(b.first_name, ' ', b.last_name) AS name"),
@@ -505,17 +510,19 @@ class Common_model extends Model
                 't.serv_time',
                 'v.v_name as variant',
                 'v.duration',
-                'v.sp as price'
+                'v.sp as price',
+                'a.name as technician'
             )
             ->where('b.id', $id)
             ->first();
         return $appointments;
     }
-    public function get_appointment_list(){
+    public function get_appointment_list($user_id=null){
         $builder = DB::table('tbl_service_book_online as b')
             ->join('tbl_services as s', 's.sv_id', '=', 'b.sv_id')
             ->join('tbl_services_variants as v', 'v.vid', '=', 'b.vid')
-            ->join('tbl_service_time as t', 't.st_id', '=', 'b.st_id');
+            ->join('tbl_service_time as t', 't.st_id', '=', 'b.st_id')
+            ->join('tbl_admin as a', 'a.user_id', '=', 'b.user_id');
 
         $builder->select(
                 DB::raw("b.*, CONCAT(b.first_name, ' ', b.last_name) AS name"),
@@ -524,11 +531,21 @@ class Common_model extends Model
                 'v.duration',
                 'v.sp as price',
                 't.serv_time',
+                'a.name as technician_name'
             );
         if(session()->has('search')){
             $search = session('search');
-            $builder->where('first_name', 'like', '%'.$search.'%');
-            $builder->orWhere('last_name', 'like', '%'.$search.'%');
+            $builder->where(function($query) use ($search) {
+                $query->where('first_name', 'like', '%'.$search.'%')
+                    ->orWhere('last_name', 'like', '%'.$search.'%');
+            });
+        }
+        if(session()->has('technician')){
+            $user_id = session('technician');
+            $builder->where('b.user_id', $user_id);
+        }
+        if($user_id != null){
+            $builder->where('b.user_id', $user_id);
         }
         $builder->orderBy('b.id', 'DESC');
         $result = $builder->get();

@@ -30,6 +30,21 @@
             <div class="col-auto">
                 <h1 class="app-page-title mb-4">Appointment List</h1>
             </div>
+            @if(session('privilege_id') == 1)
+            <div class="col-auto">
+                <form action="{{ url('admin/search_appointment') }}" method="post" class="mb-3">
+                @csrf
+                <select name="technician" id="technician" class="form-control" onchange="this.form.submit()">
+                    <option value="">Select Technician</option>
+                    @if($users->isNotEmpty())
+                    @foreach($users as $list)
+                    <option value="{{ $list->user_id }}" {{ session('technician') == $list->user_id ? 'selected' : ''}}>{{ ucwords($list->name) }}</option>
+                    @endforeach
+                    @endif
+                </select>
+                </form>
+            </div>
+            @endif
             <div class="col-auto">
             <form action="{{ url('admin/search_appointment') }}" method="post" class="mb-3">
                 @csrf
@@ -92,7 +107,8 @@
                                             </td>
                                             <td class="">
                                                 {{ $item->service_name.' ('.$item->variant.')' }}<br>
-                                                <span style="color:#777;">Duration: {{ $item->duration ?? 0 }} min</span>
+                                                <span style="color:#777;">Duration: {{ $item->duration ?? 0 }} min</span><br>
+                                                <span style="color:#777;">Technician: {{ ucwords($item->technician_name) }}</span>
                                             </td>
                                             
                                             <td class="">${{ $item->total_amount }}</td>
@@ -230,6 +246,20 @@
                             <input type="hidden" name="old_vid" value="{{ $record->vid ?? '' }}" >
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Technician <span class="text-danger">*</span></label>
+                            <select name="user_id" id="emps" class="form-control">
+                                <option value="">Select Technician</option>
+                                @if(isset($record))
+                                <option value="{{ $record->user_id }}" selected>{{ ucwords($record->technician) }}</option>
+                                @endif
+                                @if(isset($technician) && $technician->isNotEmpty())
+                                @foreach($technician as $list)
+                                <option value="{{ $list->user_id }}">{{ ucwords($list->name) }}</option>
+                                @endforeach
+                                @endif
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Amount Received ($)</label>
                             <input type="text" name="paid_amount" id="paid_amount" value="{{ old('paid_amount', $record->paid_amount ?? 0) }}" class="form-control">
                             <input type="hidden" name="old_paid_amount" value="{{ $record->paid_amount ?? 0 }}">
@@ -352,9 +382,38 @@
                     } else {
                         $('#serviceTime').append('<option>No slots available</option>');
                     }
+                    loadTechnicians();
                 }
             });
         });
+        $('#serviceTime, #sv_id').change(function(){
+            loadTechnicians();
+        });
+
+        function loadTechnicians(){
+            var serviceDate = $('#serviceDate').val();
+            var serviceTime = $('#serviceTime').val();
+            var sv_id = $('#sv_id').val();
+
+            if(serviceDate && serviceTime && sv_id){
+                $.ajax({
+                    url: "{{ url('admin/get-technicians') }}",
+                    type: "POST",
+
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        service_date: serviceDate,
+                        st_id: serviceTime,
+                        sv_id: sv_id
+                    },
+                    success: function(res){
+                        console.log(res); 
+                        // return false;
+                        $('#emps').html(res);
+                    }
+                });
+            }
+        }
 
         $('#saveService').on('click', function (e) {
             e.preventDefault(); // stop form submit
@@ -370,6 +429,7 @@
             let serviceTime = $('#serviceTime').val();
             let service = $('#sv_id').val();
             let variant = $('#vid').val();
+            let technician = $('#emps').val();
             let status = $('#status').val();
             let sp = parseInt($('#vid option:selected').data('sp')) || 0;
             let paid = parseInt($('#paid_amount').val()) || 0;
@@ -405,6 +465,13 @@
                 isValid = false;
                 errors.push("Please select variant.");
                 $('#vid').addClass('is-invalid');
+            }
+
+            // Validate Technician
+            if (technician === "" || technician === null) {
+                isValid = false;
+                errors.push("Please select technicians.");
+                $('#emps').addClass('is-invalid');
             }
             // Validate Date
             if (serviceDate === "") {

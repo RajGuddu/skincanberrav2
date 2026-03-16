@@ -211,6 +211,7 @@ Route::middleware(['Authcheck'])->group(function () {
     Route::match(['get','post'],'admin/search_reset', [Appointment::class,'search_reset']);
 
     Route::get('admin/get-times-by-date', [Appointment::class,'get_times_by_date']); // ajax
+    Route::match(['get','post'],'admin/get-technicians', [Appointment::class,'get_technicians']); // ajax
 
     /*******************************************Courses*************************************** */
     Route::match(['get', 'post'], 'admin/courses', [Courses::class,'index']);
